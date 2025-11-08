@@ -1,0 +1,117 @@
+package testts;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chromium.ChromiumDriver;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class WebTableTests {
+
+    public WebDriver driver;
+    @Test
+
+    public void metodaTest(){
+
+        //deschidem un browser
+        driver= new ChromeDriver();
+        JavascriptExecutor js = (JavascriptExecutor)driver;
+
+        //accesam un URL
+        driver.get("https://demoqa.com/");
+        driver.manage().window().maximize();
+
+        WebElement elementsMenu = driver.findElement(By.xpath("//h5[text()='Elements']"));
+        js.executeScript("arguments[0].click();",elementsMenu);
+
+        WebElement webTables = driver.findElement(By.xpath("//span[text()='Web Tables']"));
+        js.executeScript("arguments[0].click();",webTables);
+
+
+        List<WebElement>  continutTabel =driver.findElements(By.xpath("//div[@class=\"rt-tbody\"]/div/div[@class=\"rt-tr -odd\" or @class=\"rt-tr -even\"]"));
+//        System.out.println("Dimensiunea tabelului este "+continutTabel.size());
+
+        Assert.assertEquals(continutTabel.size(), 3,"marimea tabelului nu este 3 ");
+        //definim un element
+        WebElement addElement = driver.findElement(By.id("addNewRecordButton"));
+        addElement.click();
+
+        WebElement firstNameElement = driver.findElement(By.id("firstName"));
+        String firstName = "Mari";
+        firstNameElement.sendKeys(firstName);
+
+        WebElement lastNameElement = driver.findElement(By.id("lastName"));
+        String lastName = "Mreana";
+        lastNameElement.sendKeys(lastName);
+
+        WebElement userEmailElement = driver.findElement(By.id("userEmail"));
+        String email = "Man@yahoo.com";
+        userEmailElement.sendKeys(email);
+
+        WebElement ageElement = driver.findElement(By.id("age"));
+        String age = "56";
+        ageElement.sendKeys(age);
+
+        WebElement salaryElement = driver.findElement(By.id("salary"));
+        String salary = "513";
+        salaryElement.sendKeys(salary);
+
+        WebElement departmentElement = driver.findElement(By.id("department"));
+        String department = "IT";
+        departmentElement.sendKeys(department);
+
+        WebElement submitButton = driver.findElement(By.id("submit"));
+        submitButton.click();
+        List<WebElement>  continutTabelNou =driver.findElements(By.xpath("//div[@class=\"rt-tbody\"]/div/div[@class=\"rt-tr -odd\" or @class=\"rt-tr -even\"]"));
+        Assert.assertEquals(continutTabelNou.size(), 4,"marimea tabelului nu este 4 ");
+//Validam valorile pe care le-am introdus
+        String continutRand = continutTabelNou.get(3).getText();
+        Assert.assertTrue(continutRand.contains(firstName), "Randul nu contine firstName value");
+        Assert.assertTrue(continutRand.contains(lastName),"Randul nu contine lastName value");
+        Assert.assertTrue(continutRand.contains(email),"Randul nu contine email value");
+        Assert.assertTrue(continutRand.contains(age), "Randul nu contine age value");
+        Assert.assertTrue(continutRand.contains(salary), "Randul nu contine salary value");
+        Assert.assertTrue(continutRand.contains(department),"Randul nu contine department value");
+
+        driver.findElement(By.id("submit"));
+        addElement.click();
+
+        //edit functionality
+        WebElement editElement = driver.findElement(By.id("edit-records-4"));
+                editElement.click();
+
+                WebElement editfirstNameElement = driver.findElement(By.id("firstName"));
+              editfirstNameElement.clear();
+                String nume2= "Richard";
+                editfirstNameElement.sendKeys(nume2);
+
+        WebElement editlastNameElement = driver.findElement(By.id("lastName"));
+        editlastNameElement.clear();
+        String prenume2= "Peter";
+        editlastNameElement.sendKeys(prenume2);
+
+        WebElement editAgeElement = driver.findElement(By.id("age"));
+        editAgeElement.clear();
+        String age2 = "25";
+        editAgeElement.sendKeys(age2);
+
+        WebElement submitbutton2Button = driver.findElement(By.id("submit"));
+        submitbutton2Button.click();
+
+        WebElement deleteElement = driver.findElement(By.id("delete-record-4"));
+        deleteElement.click();
+        List<WebElement>  continutTabelSters =driver.findElements(By.xpath("//div[@class=\"rt-tbody\"]/div/div[@class=\"rt-tr -odd\" or @class=\"rt-tr -even\"]"));
+Assert.assertEquals(continutTabelSters.size(), 3,"Noul tabel nu contine 3 randuri");
+
+
+
+
+        driver.close();
+    }
+}
+
