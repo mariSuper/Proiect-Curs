@@ -16,39 +16,25 @@ import java.util.List;
 public class ElementsMethod {
     public WebDriver driver;
 
-    ElementsMethod elementsMethod;
-    TabMethods tabMethods;
-
-    @Test
-
-    public void metodaTest() {
-
-        driver = new ChromeDriver();
-        driver.get("https://demoqa.com/");
-        driver.manage().window().maximize();
-        elementsMethod = new ElementsMethod(driver);
-        tabMethods = new TabMethods(driver);
-
-        WebElement alertMenu = driver.findElement(By.xpath("//h5[text()='Alerts, Frame & Windows']"));
-        elementsMethod.javaScriptElement(alertMenu);
-
-        WebElement tabButton = driver.findElement(By.xpath("//span[text()='Browser Windows']"));
-        elementsMethod.javaScriptElement(tabButton);
-
-        WebElement newTabButton = driver.findElement(By.id("tabButton"));
-        elementsMethod.clickElement(newTabButton);
-
-        tabMethods.switchSpecificTab(1);
-
-        tabMethods.closeCurrentTab();
-        tabMethods.switchSpecificTab(0);
-
-        WebElement newWindowElement = driver.findElement(By.id("windowButton"));
-        elementsMethod.javaScriptElement(newWindowElement);
-        tabMethods.switchSpecificTab(1);
+    public ElementsMethod(WebDriver driver) {
+        this.driver = driver;
+    }
+    public void clickElement(WebElement element){
+        waitVisibleElement(element);
+        element.click();
+    }
+    public void fillElement(WebElement element, String text){
+        waitVisibleElement(element);
+        element.sendKeys(text);
+    }
+    public void waitVisibleElement(WebElement element){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(element));
+    }
+    public void javaScriptElement(WebElement element){
+        waitVisibleElement(element);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", element);
     }
 }
-
-
-
 
