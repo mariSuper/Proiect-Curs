@@ -1,17 +1,19 @@
 package testts;
-
+import helpMethods.AlertsMethod;
+import helpMethods.ElementsMethod;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import java.time.Duration;
 
 public class AlertTest {
 
     public WebDriver driver;
+    ElementsMethod elementsMethod;
+    AlertsMethod alertsMethod;
 
     // ✅ Metoda helper - trebuie să fie aici, în clasă, dar în afara metodei @Test
     public void safeClick(WebElement element) {
@@ -28,6 +30,9 @@ public class AlertTest {
 
         // 1️⃣ Deschidem browserul Chrome
         driver = new ChromeDriver();
+        // apelam Obiectul
+        elementsMethod = new ElementsMethod(driver);
+        alertsMethod = new AlertsMethod(driver);
 
         // 2️⃣ Accesăm site-ul DemoQA și maximizăm fereastra
         driver.get("https://demoqa.com/");
@@ -42,19 +47,18 @@ public class AlertTest {
 
         // 4️⃣ Așteptăm până apare cardul "Alerts, Frame & Windows"
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement alertMeniu = wait.until(
-                ExpectedConditions.elementToBeClickable(By.xpath("//h5[text()='Alerts, Frame & Windows']")));
+        WebElement alertMeniu = wait.until(ExpectedConditions.elementToBeClickable
+                (By.xpath("//h5[text()='Alerts, Frame & Windows']")));
 
         // 5️⃣ Facem click pe cardul "Alerts, Frame & Windows" folosind JavaScript
-        js.executeScript("arguments[0].click();", alertMeniu);
+        elementsMethod.javaScriptElement(alertMeniu);
 
         // 6️⃣ Așteptăm până apare opțiunea "Browser Windows"
-        WebElement tabButton = wait.until(
-                ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Alerts']"))
-        );
+        WebElement alertButton = wait.until(ExpectedConditions.elementToBeClickable
+                (By.xpath("//span[text()='Alerts']")));
 
-        // 7️⃣ Facem click pe "Browser Windows"
-        js.executeScript("arguments[0].click();", tabButton);
+        // 7️⃣ Facem click pe "Alerts"
+        elementsMethod.javaScriptElement(alertButton);
 
         // 8️⃣ Așteptăm puțin pentru a vedea efectul (opțional, doar pentru observare)
         try {
@@ -62,44 +66,59 @@ public class AlertTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //dam click pe butonul New Tab
+        //dam click pe prima alerta
         WebElement firstAlertElement = driver.findElement(By.id("alertButton"));
-        safeClick(firstAlertElement);
-        Alert firstAlert = driver.switchTo().alert();
-        firstAlert.accept();
+        elementsMethod.javaScriptElement(firstAlertElement);
+        alertsMethod.acceptAlert(false);
 
         //skiped second alert
-        WebElement secondAlert  = driver.findElement(By.id("timerAlertButton"));
-        secondAlert.click();
+        WebElement secondAlertElement  = driver.findElement(By.id("timerAlertButton"));
+        elementsMethod.javaScriptElement(secondAlertElement);
 
-        //wait explicit
-        WebDriverWait waitExplicit = new WebDriverWait(driver,Duration.ofSeconds(10));
-        waitExplicit.until(ExpectedConditions.alertIsPresent());
-        Alert secondAlertElement = driver.switchTo().alert();
-        System.out.println(secondAlertElement.getText());
-        secondAlertElement.accept();
+        //wait explicit folosit pentru al doilea alert, care se deschide cu întârziere.
+        alertsMethod.acceptAlert(false);
 
         // Click pe butonul pentru alerta a treia
         WebElement thirdAlertElement = driver.findElement(By.id("confirmButton"));
-        safeClick(thirdAlertElement);
+        elementsMethod.javaScriptElement(thirdAlertElement);
 
-// Comutăm pe alertă
+        // Comutăm pe alertă
         Alert thirdAlert = driver.switchTo().alert();
 
-// Definim dacă vrem să alegem OK sau Cancel
+        // Definim dacă vrem să alegem OK sau Cancel
         boolean chooseAccept = false; // schimbă în true dacă vrei OK
 
-        if (chooseAccept) {
-            thirdAlert.accept();
-            System.out.println("Ai ales OK");
-        } else {
-            thirdAlert.dismiss();
-            System.out.println("Ai ales Cancel");
-        }
+        // apăsăm alerta
+        alertsMethod.acceptAlert(chooseAccept);
 
-// Validare pentru alerta a treia
+        // După închiderea alertei, citim textul din pagină
         WebElement textThirdAlert = driver.findElement(By.id("confirmResult"));
         String actualText = textThirdAlert.getText();
+
+        // Validăm alerta a 3-a
+        alertsMethod.verifyConfirmAlert(actualText, false);
+
+        // Alerta a patra: inspectam id-ul butonului 'Ckick me'
+        WebElement fourthAlertElement = driver.findElement(By.id("promtButton"));
+        elementsMethod.javaScriptElement(fourthAlertElement);
+
+       // comutăm pe alertă
+        Alert fourthAlert = driver.switchTo().alert();
+
+        // scriem textul
+        elementsMethod.fillAlert("Text123");
+
+        // confirmăm alerta
+        fourthAlert.accept();
+
+        // După ce apăsăm OK, verificăm textul afișat în pagină
+        WebElement textFourthAlert = driver.findElement(By.id("promptResult"));
+
+        // validăm textul
+        String expectedTextFourth = "You entered Text123";
+
+        // compară textul din pagină cu cel așteptat.
+        Assert.assertEquals(textFourthAlert.getText(), expectedTextFourth);
 
         if (chooseAccept) {
             Assert.assertEquals(actualText, "You selected Ok");

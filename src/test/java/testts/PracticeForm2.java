@@ -1,11 +1,10 @@
 package testts;
-
+import helpMethods.ElementsMethod;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import javax.lang.model.element.Element;
 import java.io.File;
 import java.util.Arrays;
@@ -14,6 +13,7 @@ import java.util.List;
 public class PracticeForm2 {
 
     public WebDriver driver;
+    ElementsMethod elementsMethod;
 
     @Test
     public void metodaTest() {
@@ -23,36 +23,38 @@ public class PracticeForm2 {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.get("https://demoqa.com/");
         driver.manage().window().maximize();
+        elementsMethod = new ElementsMethod(driver);
 
         // 2️⃣ Navigăm la formular
         WebElement formsMenu = driver.findElement(By.xpath("//h5[text()='Forms']"));
-        js.executeScript("arguments[0].click();", formsMenu);
+        elementsMethod.javaScriptElement(formsMenu);
 
         WebElement practiceForm = driver.findElement(By.xpath("//span[text()='Practice Form']"));
-        js.executeScript("arguments[0].click();", practiceForm);
+        elementsMethod.javaScriptElement(practiceForm);
+
 
         // 3️⃣ Completăm câmpurile simple
         WebElement firstNameElement = driver.findElement(By.id("firstName"));
-        String firstName = "Mari";
-        firstNameElement.sendKeys(firstName);
+        elementsMethod.fillElement(firstNameElement, "Mari");
 
         WebElement lastNameElement = driver.findElement(By.id("lastName"));
-        String lastName = "Minea";
-        lastNameElement.sendKeys(lastName);
+        elementsMethod.fillElement(lastNameElement, "Minea");
 
         WebElement emailElement = driver.findElement(By.id("userEmail"));
-        String userEmail = "minea_m@gmail.com";
-        emailElement.sendKeys(userEmail);
+        elementsMethod.fillElement(emailElement, "minea_m@gmail.com");
 
         WebElement mobileElement = driver.findElement(By.id("userNumber"));
-        String userNumber = "0728335012";
-        mobileElement.sendKeys(userNumber);
+        elementsMethod.fillElement(mobileElement, "0728335012");
 
         //Date Of birth interaction
 //declaram un web element
         WebElement dateOfBirth=driver.findElement(By.id("dateOfBirthInput"));
 //facem click pe el
         dateOfBirth.click();
+        elementsMethod.javaScriptElement(dateOfBirth);
+
+
+
 //identificam elementul din pagina by class name
         WebElement monthElement=driver.findElement(By.className("react-datepicker__month-select"));
 //obiect de tip Select prin care interactionam direct cu lista

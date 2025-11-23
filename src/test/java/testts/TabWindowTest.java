@@ -1,6 +1,4 @@
 package testts;
-
-
 import helpMethods.ElementsMethod;
 import helpMethods.TabMethods;
 import org.openqa.selenium.By;
@@ -8,19 +6,12 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.v125.network.model.ServiceWorkerRouterInfo;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-
 public class TabWindowTest {
 
     public WebDriver driver;
     ElementsMethod elementsMethod;
+    TabMethods tabMethods;
 
     @Test
     public void metodaTest() {
@@ -31,6 +22,7 @@ public class TabWindowTest {
 
         //declaram obiectul
         elementsMethod = new ElementsMethod(driver);
+        tabMethods = new TabMethods(driver);
 
         //Scroll în jos pentru a vedea cardul "Alerts, Frame & Windows"
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -44,20 +36,42 @@ public class TabWindowTest {
         WebElement tabButton = driver.findElement(By.xpath("//span[text()='Browser Windows']"));
         elementsMethod.javaScriptElement(tabButton);
 
-//Așteptăm puțin pentru a vedea efectul (opțional, doar pentru observare)
+        WebElement newTabButton = driver.findElement(By.id("tabButton"));
+        elementsMethod.javaScriptElement(newTabButton);
+
+        tabMethods.switchSpecificTab(1);
+
+        tabMethods.closeCurrentTab();
+        tabMethods.switchSpecificTab(0);
+
+        WebElement newWindowElement = driver.findElement(By.id("windowButton"));
+        elementsMethod.javaScriptElement(newWindowElement);
+        tabMethods.switchSpecificTab(1);
+
+        WebElement newWindowMessage = driver.findElement(By.id("messageWindowButton"));
+        elementsMethod.javaScriptElement(newWindowMessage);
+
+        // Schimbăm focusul către noua fereastră
+        tabMethods.switchSpecificTab(1);
+
+        // Pentru "New Window Message", fereastra are text, nu HTML complet
+        System.out.println(driver.getPageSource());
+
+        // Închidem fereastra de mesaj
+        tabMethods.closeCurrentTab();
+
+        // Ne întoarcem la prima fereastră
+        tabMethods.switchSpecificTab(0);
+
+        //Așteptăm puțin pentru a vedea efectul (opțional, doar pentru observare)
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-//dam click pe butonul New Tab
-        WebElement tubButtonElement = driver.findElement(By.id("tabButton"));
-        tubButtonElement.click();
-
         // Test reușit — s-a deschis Tab-ul
-//        driver.quit();
-    }
-//         9️⃣ Închidem browserul
-//        driver.quit();
+        // driver.quit();
+       }
+        // 9️⃣ Închidem browserul
+        //  driver.quit();
     }

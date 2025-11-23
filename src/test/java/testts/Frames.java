@@ -1,42 +1,44 @@
 package testts;
-
+import helpMethods.ElementsMethod;
+import helpMethods.FrameMethods;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
 
 public class Frames {
     public WebDriver driver;
+    ElementsMethod elementsMethod;
+    FrameMethods frameMethods;
 
     @Test
     public void metodaTest() {
         //deschidem un browser
         driver = new ChromeDriver();
 
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+        //Creează obiectele
+        elementsMethod = new ElementsMethod(driver);
+        frameMethods = new FrameMethods(driver);
 
-
-        //accesam un URL
-
+        // Accesează site-ul DemoQA
         driver.get("https://demoqa.com/");
         driver.manage().window().maximize();
 
+        //Face click pe meniul “Alerts, Frame & Windows”
         WebElement alertMenu = driver.findElement(By.xpath("//h5[text()='Alerts, Frame & Windows']"));
-        js.executeScript("arguments[0].click();", alertMenu);
+        elementsMethod.javaScriptElement(alertMenu);
 
+        //Face click pe sub-meniul “Frames”
         WebElement framesButton = driver.findElement(By.xpath("//span[text()='Frames']"));
-        js.executeScript("arguments[0].click();", framesButton);
+        elementsMethod.javaScriptElement(framesButton);
 
-        driver.switchTo().frame("frame1");
-        WebElement sampleTextElement = driver.findElement(By.id("sampleHeading"));
-        System.out.println(sampleTextElement.getText());
-        driver.switchTo().parentFrame();
+        //Lucru cu frame-uri
+        //Intră în iframe-ul cu id "frame1"
+        frameMethods.switchToSpecificFrame("frame1");
 
-        driver.switchTo().frame("frame2");
-        WebElement frameTwoElement = driver.findElement(By.id("sampleHeading"));
-        System.out.println(frameTwoElement.getText());
+        //Se întoarce la pagina principală (părăsește frame-ul)
+        frameMethods.switchToParent();
+
+        //Intră în al doilea frame: "frame2"
+        frameMethods.switchToSpecificFrame("frame2");
     }
 }
