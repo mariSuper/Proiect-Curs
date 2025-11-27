@@ -39,17 +39,18 @@ public class TabWindowTest {
         WebElement newTabButton = driver.findElement(By.id("tabButton"));
         elementsMethod.javaScriptElement(newTabButton);
 
+        WebElement newWindowElement = driver.findElement(By.id("windowButton"));
+        elementsMethod.javaScriptElement(newWindowElement);
+
         tabMethods.switchSpecificTab(1);
 
         tabMethods.closeCurrentTab();
         tabMethods.switchSpecificTab(0);
 
-        WebElement newWindowElement = driver.findElement(By.id("windowButton"));
-        elementsMethod.javaScriptElement(newWindowElement);
-        tabMethods.switchSpecificTab(1);
-
         WebElement newWindowMessage = driver.findElement(By.id("messageWindowButton"));
         elementsMethod.javaScriptElement(newWindowMessage);
+
+        tabMethods.switchSpecificTab(1);
 
         // Schimbăm focusul către noua fereastră
         tabMethods.switchSpecificTab(1);

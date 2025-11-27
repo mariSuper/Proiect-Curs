@@ -22,6 +22,8 @@ public class PracticeForm2 {
         driver = new ChromeDriver();
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.get("https://demoqa.com/");
+        //dezactivam reclamele (de iframe ads)
+        js.executeScript("document.querySelectorAll('iframe, adsbygoogle, [id*=\"ad\"], [class*=\"ads\"]').forEach(e => e.remove());");
         driver.manage().window().maximize();
         elementsMethod = new ElementsMethod(driver);
 
@@ -32,26 +34,28 @@ public class PracticeForm2 {
         WebElement practiceForm = driver.findElement(By.xpath("//span[text()='Practice Form']"));
         elementsMethod.javaScriptElement(practiceForm);
 
-
         // 3️⃣ Completăm câmpurile simple
         WebElement firstNameElement = driver.findElement(By.id("firstName"));
-        elementsMethod.fillElement(firstNameElement, "Mari");
+        String firstName = "Mari";
+        elementsMethod.fillElement(firstNameElement, firstName);
 
         WebElement lastNameElement = driver.findElement(By.id("lastName"));
-        elementsMethod.fillElement(lastNameElement, "Minea");
+        String lastName = "Minea";
+        elementsMethod.fillElement(lastNameElement, lastName);
 
         WebElement emailElement = driver.findElement(By.id("userEmail"));
-        elementsMethod.fillElement(emailElement, "minea_m@gmail.com");
+        String userEmail = "minea_m@gmail.com";
+        elementsMethod.fillElement(emailElement, userEmail);
 
         WebElement mobileElement = driver.findElement(By.id("userNumber"));
-        elementsMethod.fillElement(mobileElement, "0728335012");
+        String userNumber = "0728335012";
+        elementsMethod.fillElement(mobileElement, userNumber);
 
         //Date Of birth interaction
 //declaram un web element
         WebElement dateOfBirth=driver.findElement(By.id("dateOfBirthInput"));
 //facem click pe el
-        dateOfBirth.click();
-        elementsMethod.javaScriptElement(dateOfBirth);
+        js.executeScript("arguments[0].click();", dateOfBirth);
 
 
 
